@@ -14,8 +14,8 @@ return require("packer").startup({
         use("ThePrimeagen/harpoon")
 
         --lsp
-        use('neovim/nvim-lspconfig')
         use("williamboman/nvim-lsp-installer")
+        use('neovim/nvim-lspconfig')
         use("nvim-lua/lsp_extensions.nvim")
         use("onsails/lspkind-nvim")
         use("glepnir/lspsaga.nvim")
@@ -31,6 +31,7 @@ return require("packer").startup({
         })
         use("nvim-treesitter/playground")
         use("romgrk/nvim-treesitter-context")
+        use('nvim-treesitter/nvim-treesitter-textobjects')
         --git
         use('airblade/vim-gitgutter')
         use('APZelos/blamer.nvim')
@@ -41,7 +42,7 @@ return require("packer").startup({
             run = function() vim.fn['firenvim#install'](0) end
         }
 
-        use("/home/mohammad/code/dura.nvim")
+        use("~/code/dura.nvim")
         --
         use('szw/vim-maximizer')
         use('chrisbra/changesPlugin')

@@ -1,5 +1,4 @@
 
-vim.cmd("colorscheme codedark")
 
 
 local augroup = vim.api.nvim_create_augroup

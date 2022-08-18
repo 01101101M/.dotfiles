@@ -1,4 +1,10 @@
+require("nvim-lsp-installer").setup({
+    automatic_installation = true,
+})
+
+
 local Remap = require("dpr.keymap")
+
 local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
@@ -88,6 +94,7 @@ local function config(_config)
     return vim.tbl_deep_extend("force", {
         capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
         on_attach = function()
+            nnoremap("<leader>f", function() vim.lsp.buf.format() end)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
             nnoremap("K", function() vim.lsp.buf.hover() end)
             nnoremap("<leader>vws", function() vim.lsp.buf.workspace_symbol() end)
@@ -103,9 +110,6 @@ local function config(_config)
 end
 
 local lspconfig = require('lspconfig')
-lspconfig.tsserver.setup(config())
-lspconfig.ccls.setup(config())
-lspconfig.cssls.setup(config())
 lspconfig.gopls.setup(config({
     cmd = { "gopls", "serve" },
     settings = {
@@ -117,11 +121,35 @@ lspconfig.gopls.setup(config({
         },
     },
 }))
+lspconfig.eslint.setup (config({
+    on_attach = function(client, bufnr)
+        local group = vim.api.nvim_create_augroup("Eslint", {})
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            group = group,
+            pattern = "<buffer>",
+            command = "EslintFixAll",
+            desc = "Run eslint when saving buffer.",
+        })
+    end,
+    capabilities = capabilities,
+    settings = {
+        codeActionOnSave = {
+            enable = true,
+            mode = "all"
+        },
+    }
+}))
+lspconfig['tsserver'].setup(config())
+lspconfig['golangci_lint_ls'].setup(config())
+lspconfig['ccls'].setup(config())
+lspconfig['cssls'].setup(config())
 lspconfig['grammarly'].setup(config())
 lspconfig['vimls'].setup(config())
-lspconfig['tsserver'].setup(config())
 lspconfig['volar'].setup(config())
-lspconfig['cssls'].setup(config())
+lspconfig['cssmodules_ls'].setup(config())
+lspconfig['sqlls'].setup(config())
+lspconfig['sqls'].setup(config())
+lspconfig['bashls'].setup(config())
 lspconfig['sumneko_lua'].setup(config({
     settings = {
         Lua = {

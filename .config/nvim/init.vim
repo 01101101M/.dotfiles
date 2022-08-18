@@ -46,3 +46,7 @@ nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
 noremap <silent> <Leader>+ :vertical resize +5<CR>
 noremap <silent> <Leader>- :vertical resize -5<CR>
+
+let g:neovide_cursor_vfx_mode = "pixiedust"
+let g:neovide_fullscreen=v:true
+
