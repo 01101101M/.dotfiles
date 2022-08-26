@@ -12,6 +12,7 @@ inoremap <silent><F1> <esc>:w<CR>
 vnoremap <silent><F1> <esc>:w<CR>
 
 nmap <leader>t :tabnew<CR>:Telescope find_files<CR>
+nnoremap <leader>ws :Telescope lsp_document_symbols<CR>
 
 "git
 nmap <leader>gs :Git<CR>
@@ -47,6 +48,16 @@ nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
 noremap <silent> <Leader>+ :vertical resize +5<CR>
 noremap <silent> <Leader>- :vertical resize -5<CR>
 
-let g:neovide_cursor_vfx_mode = "pixiedust"
-let g:neovide_fullscreen=v:true
 
+tnoremap <Esc> <C-\><C-n>
+
+" neovide zoom
+"
+let g:gui_font_size = 12
+silent! execute('set guifont=Menlo:h'.g:gui_font_size)
+function! ResizeFont(delta)
+let g:gui_font_size = g:gui_font_size + a:delta
+execute('set guifont=Menlo:h'.g:gui_font_size)
+endfunction
+noremap <expr><D-=> ResizeFont(1)
+noremap <expr><D--> ResizeFont(-1)

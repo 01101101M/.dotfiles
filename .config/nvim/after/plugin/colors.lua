@@ -14,16 +14,9 @@ vim.cmd("highlight SignColumn   guibg=#1d1f21 ctermbg=none cterm=none")
 vim.cmd("highlight EndOfBuffer  guibg=#1d1f21 ctermbg=none cterm=none")
 
 
-
-
-
-
-
-
-
-local hl = function(thing, opts)
+--[[ local hl = function(thing, opts)
     vim.api.nvim_set_hl(0, thing, opts)
-end
+end ]]
 
 --[[ hl("Conceal", { bg = "none"})
 hl("CursorLine", { bg = "none"})

@@ -1,9 +1,12 @@
 local Remap = require("dpr.keymap")
 local nnoremap = Remap.nnoremap
 
-nnoremap("<leader>ps", function()
-    require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})
+nnoremap("<leader>ps",function ()
+    require('telescope.builtin').live_grep()
 end)
+--[[ nnoremap("<leader>ps", function()
+    require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})
+end) ]]
 nnoremap("<C-p>", function()
     require('telescope.builtin').find_files()
 end)

@@ -3,7 +3,7 @@ return require("packer").startup({
         use('wbthomason/packer.nvim')
         use('tomasiser/vim-code-dark')
 
-        -- TJ created lodash of neovim
+        -- dpr created lodash of neovim
         use("nvim-lua/plenary.nvim")
         use("nvim-lua/popup.nvim")
         use("nvim-telescope/telescope.nvim")
@@ -23,6 +23,8 @@ return require("packer").startup({
         use("L3MON4D3/LuaSnip")
         use("hrsh7th/cmp-nvim-lsp")
         use("hrsh7th/cmp-buffer")
+        use("f3fora/cmp-spell")
+        use("lukas-reineke/cmp-rg")
         use("hrsh7th/nvim-cmp")
         use("saadparwaiz1/cmp_luasnip")
         --treesitter
@@ -42,11 +44,11 @@ return require("packer").startup({
             run = function() vim.fn['firenvim#install'](0) end
         }
 
-        use("~/code/dura.nvim")
+        --[[ use("~/code/dura.nvim") ]]
         --
         use('szw/vim-maximizer')
         use('chrisbra/changesPlugin')
-         use('folke/trouble.nvim')
+        use('folke/trouble.nvim')
         --comment
         use('numToStr/Comment.nvim')
         use('JoosepAlviste/nvim-ts-context-commentstring')
@@ -64,7 +66,10 @@ return require("packer").startup({
         use('editorconfig/editorconfig-vim')
         --arilne
         use('vim-airline/vim-airline')
-
+        --undo tree
+        use('mbbill/undotree')
+        --terminal
+        use("akinsho/toggleterm.nvim")
     end,
     config = {
         git = {

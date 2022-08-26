@@ -8,7 +8,7 @@ local actions = require("telescope.actions")
 require("telescope").setup({
 	defaults = {
 		file_sorter = require("telescope.sorters").get_fzy_sorter,
-        prompt_prefix = "$ ",
+		prompt_prefix = "$ ",
 		color_devicons = true,
 
 		file_previewer = require("telescope.previewers").vim_buffer_cat.new,
@@ -24,10 +24,10 @@ require("telescope").setup({
 	},
 	extensions = {
 		fzy_native = {
-            fuzzy = true,
+			fuzzy = true,
 			override_generic_sorter = true,
 			override_file_sorter = true,
-            case_mode = "smart_case",
+			case_mode = "smart_case",
 		},
 	},
 })
@@ -38,7 +38,7 @@ require("telescope").load_extension("git_worktree")
 local M = {}
 
 function M.reload_modules()
-	-- Because TJ gave it to me.  Makes me happpy.  Put it next to his other
+	-- Because dpr gave it to me.  Makes me happpy.  Put it next to his other
 	-- awesome things.
 	local lua_dirs = vim.fn.glob("./lua/*", 0, 1)
 	for _, dir in ipairs(lua_dirs) do
@@ -56,14 +56,14 @@ M.search_dotfiles = function()
 end
 
 local function set_background(content)
-    print(content)
+	print(content)
 	vim.fn.system("feh --bg-fill " .. content .. "'\"")
 end
 
 local function select_background(prompt_bufnr, map)
 	local function set_the_background(close)
 		local content = require("telescope.actions.state").get_selected_entry(prompt_bufnr)
-        print(vim.inspect(content))
+		print(vim.inspect(content))
 		set_background(content.cwd .. "/" .. content.value)
 		if close then
 			require("telescope.actions").close(prompt_bufnr)
@@ -86,7 +86,7 @@ local function image_selector(prompt, cwd)
 			cwd = cwd,
 
 			attach_mappings = function(prompt_bufnr, map)
-                print("help me ???")
+				print("help me ???")
 				select_background(prompt_bufnr, map)
 
 				-- Please continue mapping (attaching additional key maps):
@@ -225,5 +225,3 @@ M.dev = function(opts)
 end
 
 return M
-
-

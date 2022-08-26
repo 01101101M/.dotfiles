@@ -58,7 +58,9 @@ cmp.setup({
         { name = "luasnip" },
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
-        { name = "buffer" },
+        { name = "buffer", max_item_count = 3 },
+        { name = 'rg', max_item_count = 3 },
+        { name = 'spell' },
     },
 })
 
@@ -94,6 +96,13 @@ local function config(_config)
     return vim.tbl_deep_extend("force", {
         capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
         on_attach = function()
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                group = vim.api.nvim_create_augroup("auto_fmt", {}),
+                pattern = { "*.go","*.lua" },
+                callback = function()
+                    vim.lsp.buf.format()
+                end
+            })
             nnoremap("<leader>f", function() vim.lsp.buf.format() end)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
             nnoremap("K", function() vim.lsp.buf.hover() end)
@@ -121,7 +130,7 @@ lspconfig.gopls.setup(config({
         },
     },
 }))
-lspconfig.eslint.setup (config({
+lspconfig.eslint.setup(config({
     on_attach = function(client, bufnr)
         local group = vim.api.nvim_create_augroup("Eslint", {})
         vim.api.nvim_create_autocmd("BufWritePre", {
@@ -178,7 +187,7 @@ local snippets_paths = function()
     local plugins = { "friendly-snippets" }
     local paths = {}
     local path
-	local root_path = vim.env.HOME .. "/.vim/plugged/"
+    local root_path = vim.env.HOME .. "/.vim/plugged/"
     for _, plug in ipairs(plugins) do
         path = root_path .. plug
         if vim.fn.isdirectory(path) ~= 0 then
