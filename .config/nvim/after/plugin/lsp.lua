@@ -4,6 +4,7 @@ require("nvim-lsp-installer").setup({
 
 
 local Remap = require("dpr.keymap")
+local util = require "lspconfig/util"
 
 local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
@@ -98,7 +99,7 @@ local function config(_config)
         on_attach = function()
             vim.api.nvim_create_autocmd("BufWritePre", {
                 group = vim.api.nvim_create_augroup("auto_fmt", {}),
-                pattern = { "*.go","*.lua" },
+                pattern = { "*.go", "*.lua" },
                 callback = function()
                     vim.lsp.buf.format()
                 end
@@ -121,10 +122,39 @@ end
 local lspconfig = require('lspconfig')
 lspconfig.gopls.setup(config({
     cmd = { "gopls", "serve" },
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
     settings = {
         gopls = {
+            gofumpt = true,
+            --usePlaceholders = false,
+            semanticTokens = true,
+            hoverKind = 'Structured',
+            annotations = {
+                bounds = true,
+                escape = true,
+                inline = true,
+                ['nil'] = true,
+            },
+            linkTarget = 'pkg.go.dev',
+            linksInHover = true,
+            -- importShortcut = 'Both',
+            --see https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
             analyses = {
+                fieldalignment = true,
+                nilness = true,
+                shadow = true,
                 unusedparams = true,
+                unusedvariable = true,
+                unusedwrite = true,
+                useany = true,
+            },
+            codelenses = {
+                gc_details = true,
+                generate = true,
+                regenerate_cgo = false,
+                tidy = true,
+                upgrade_dependency = true,
+                vendor = true,
             },
             staticcheck = true,
         },
