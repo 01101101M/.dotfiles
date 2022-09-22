@@ -7,6 +7,8 @@ require("dpr.telescope")
 EOF
 
 
+nnoremap <silent>` <esc>:ToggleTerm<CR>
+
 nnoremap <silent><F1> <esc>:w<CR>
 inoremap <silent><F1> <esc>:w<CR>
 vnoremap <silent><F1> <esc>:w<CR>

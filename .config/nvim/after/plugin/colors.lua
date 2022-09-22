@@ -1,5 +1,3 @@
-
-
 vim.cmd("colorscheme codedark")
 
 vim.cmd("highlight Conceal      guibg=#1d1f21 ctermbg=none cterm=none")

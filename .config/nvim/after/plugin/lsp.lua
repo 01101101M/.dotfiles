@@ -93,18 +93,30 @@ cmp.setup.cmdline(':', {
     })
 })
 
+
+local lsp_formatting = function(bufnr)
+    vim.lsp.buf.format({
+        filter = function(client)
+            -- return client.name ~= "volar"
+            return true
+        end,
+        bufnr = bufnr,
+    })
+end
+
+
 local function config(_config)
     return vim.tbl_deep_extend("force", {
         capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-        on_attach = function()
+        on_attach = function(client, bufnr)
             vim.api.nvim_create_autocmd("BufWritePre", {
                 group = vim.api.nvim_create_augroup("auto_fmt", {}),
                 pattern = { "*.go", "*.lua" },
                 callback = function()
-                    vim.lsp.buf.format()
+                    lsp_formatting(bufnr)
                 end
             })
-            nnoremap("<leader>f", function() vim.lsp.buf.format() end)
+            nnoremap("<leader>f", function() lsp_formatting(bufnr) end)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
             nnoremap("K", function() vim.lsp.buf.hover() end)
             nnoremap("<leader>vws", function() vim.lsp.buf.workspace_symbol() end)
@@ -160,23 +172,90 @@ lspconfig.gopls.setup(config({
         },
     },
 }))
+
+
+
+local function fix_all(opts)
+    opts = opts or {}
+
+    local eslint_lsp_client = util.get_active_client_by_name(opts.bufnr, 'eslint')
+    if eslint_lsp_client == nil then
+        return
+    end
+
+    local request
+    if opts.sync then
+        request = function(bufnr, method, params)
+            eslint_lsp_client.request_sync(method, params, nil, bufnr)
+        end
+    else
+        request = function(bufnr, method, params)
+            eslint_lsp_client.request(method, params, nil, bufnr)
+        end
+    end
+
+    local bufnr = util.validate_bufnr(opts.bufnr or 0)
+    request(0, 'workspace/executeCommand', {
+        command = 'eslint.applyAllFixes',
+        arguments = {
+            {
+                uri = vim.uri_from_bufnr(bufnr),
+                version = vim.lsp.util.buf_versions[bufnr],
+            },
+        },
+    })
+end
+
 lspconfig.eslint.setup(config({
-    on_attach = function(client, bufnr)
+    on_attach = function(client)
+        client.server_capabilities.documentFormattingProvider = true
         local group = vim.api.nvim_create_augroup("Eslint", {})
         vim.api.nvim_create_autocmd("BufWritePre", {
             group = group,
             pattern = "<buffer>",
-            command = "EslintFixAll",
+            callback = function()
+                fix_all({ sync = true, bufnr = 0 })
+            end,
             desc = "Run eslint when saving buffer.",
         })
     end,
     capabilities = capabilities,
     settings = {
+        validate = 'on',
+        packageManager = 'yarn',
+        useESLintClass = false,
         codeActionOnSave = {
-            enable = true,
-            mode = "all"
+            enable = false,
+            mode = 'all',
         },
-    }
+        format = true,
+        quiet = false,
+        onIgnoredFiles = 'off',
+        rulesCustomizations = {},
+        run = 'onType',
+        -- nodePath configures the directory in which the eslint server should start its node_modules resolution.
+        -- This path is relative to the workspace folder (root dir) of the server instance.
+        -- nodePath = '',
+        -- use the workspace folder location or the file location (if no workspace folder is open) as the working directory
+        workingDirectory = { mode = 'location' },
+        codeAction = {
+            disableRuleComment = {
+                enable = true,
+                location = 'separateLine',
+            },
+            showDocumentation = {
+                enable = true,
+            },
+        },
+    },
+    commands = {
+        EslintFixAll = {
+            function()
+                fix_all { sync = true, bufnr = 0 }
+            end,
+            description = 'Fix all eslint problems for this buffer',
+        },
+    },
 }))
 lspconfig['tsserver'].setup(config())
 lspconfig['golangci_lint_ls'].setup(config())
@@ -232,3 +311,8 @@ require("luasnip.loaders.from_vscode").lazy_load({
     include = nil, -- Load all languages
     exclude = {},
 })
+
+
+
+
+require("lsp_signature").setup()

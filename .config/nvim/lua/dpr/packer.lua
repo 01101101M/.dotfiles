@@ -1,5 +1,6 @@
 return require("packer").startup({
     function(use)
+
         use('wbthomason/packer.nvim')
         use('tomasiser/vim-code-dark')
 
@@ -44,7 +45,7 @@ return require("packer").startup({
             run = function() vim.fn['firenvim#install'](0) end
         }
 
-        --[[ use("~/code/dura.nvim") ]]
+        -- use("~/code/dura.nvim")
         --
         use('szw/vim-maximizer')
         use('chrisbra/changesPlugin')
@@ -70,6 +71,7 @@ return require("packer").startup({
         use('mbbill/undotree')
         --terminal
         use("akinsho/toggleterm.nvim")
+        use("ray-x/lsp_signature.nvim")
     end,
     config = {
         git = {
