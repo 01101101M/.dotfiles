@@ -72,6 +72,8 @@ return require("packer").startup({
         --terminal
         use("akinsho/toggleterm.nvim")
         use("ray-x/lsp_signature.nvim")
+        --nul-ls
+        use("jose-elias-alvarez/null-ls.nvim")
     end,
     config = {
         git = {

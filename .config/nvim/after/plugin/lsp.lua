@@ -1,3 +1,4 @@
+
 require("nvim-lsp-installer").setup({
     automatic_installation = true,
 })
@@ -107,13 +108,13 @@ end
 
 local function config(_config)
     return vim.tbl_deep_extend("force", {
-        capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+        capabilities = require("cmp_nvim_lsp").default_capabilities(),
         on_attach = function(client, bufnr)
             vim.api.nvim_create_autocmd("BufWritePre", {
                 group = vim.api.nvim_create_augroup("auto_fmt", {}),
                 pattern = { "*.go", "*.lua" },
                 callback = function()
-                    lsp_formatting(bufnr)
+                    vim.lsp.buf.formatting_sync()
                 end
             })
             nnoremap("<leader>f", function() lsp_formatting(bufnr) end)
@@ -174,89 +175,6 @@ lspconfig.gopls.setup(config({
 }))
 
 
-
-local function fix_all(opts)
-    opts = opts or {}
-
-    local eslint_lsp_client = util.get_active_client_by_name(opts.bufnr, 'eslint')
-    if eslint_lsp_client == nil then
-        return
-    end
-
-    local request
-    if opts.sync then
-        request = function(bufnr, method, params)
-            eslint_lsp_client.request_sync(method, params, nil, bufnr)
-        end
-    else
-        request = function(bufnr, method, params)
-            eslint_lsp_client.request(method, params, nil, bufnr)
-        end
-    end
-
-    local bufnr = util.validate_bufnr(opts.bufnr or 0)
-    request(0, 'workspace/executeCommand', {
-        command = 'eslint.applyAllFixes',
-        arguments = {
-            {
-                uri = vim.uri_from_bufnr(bufnr),
-                version = vim.lsp.util.buf_versions[bufnr],
-            },
-        },
-    })
-end
-
-lspconfig.eslint.setup(config({
-    on_attach = function(client)
-        client.server_capabilities.documentFormattingProvider = true
-        local group = vim.api.nvim_create_augroup("Eslint", {})
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            group = group,
-            pattern = "<buffer>",
-            callback = function()
-                fix_all({ sync = true, bufnr = 0 })
-            end,
-            desc = "Run eslint when saving buffer.",
-        })
-    end,
-    capabilities = capabilities,
-    settings = {
-        validate = 'on',
-        packageManager = 'yarn',
-        useESLintClass = false,
-        codeActionOnSave = {
-            enable = false,
-            mode = 'all',
-        },
-        format = true,
-        quiet = false,
-        onIgnoredFiles = 'off',
-        rulesCustomizations = {},
-        run = 'onType',
-        -- nodePath configures the directory in which the eslint server should start its node_modules resolution.
-        -- This path is relative to the workspace folder (root dir) of the server instance.
-        -- nodePath = '',
-        -- use the workspace folder location or the file location (if no workspace folder is open) as the working directory
-        workingDirectory = { mode = 'location' },
-        codeAction = {
-            disableRuleComment = {
-                enable = true,
-                location = 'separateLine',
-            },
-            showDocumentation = {
-                enable = true,
-            },
-        },
-    },
-    commands = {
-        EslintFixAll = {
-            function()
-                fix_all { sync = true, bufnr = 0 }
-            end,
-            description = 'Fix all eslint problems for this buffer',
-        },
-    },
-}))
 lspconfig['tsserver'].setup(config())
 lspconfig['golangci_lint_ls'].setup(config())
 lspconfig['ccls'].setup(config())
@@ -312,7 +230,35 @@ require("luasnip.loaders.from_vscode").lazy_load({
     exclude = {},
 })
 
-
+-- Set up null-ls
+local use_null = true
+if use_null then
+    local augroup = vim.api.nvim_create_augroup("auto_fmt", {})
+    local null_ls = require("null-ls")
+    local b = null_ls.builtins
+    null_ls.setup {
+        sources = {
+            -- b.diagnostics.eslint,
+            -- b.completion.spell,
+            b.diagnostics.eslint_d,
+            b.formatting.eslint_d,
+        },
+        debug = true,
+        -- format on save
+        on_attach = function(client, bufnr)
+            if client.supports_method("textDocument/formatting") then
+                vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                    group = augroup,
+                    buffer = bufnr,
+                    callback = function()
+                        vim.lsp.buf.formatting_sync({ bufnr = bufnr })
+                    end,
+                })
+            end
+        end,
+    }
+end
 
 
 require("lsp_signature").setup()

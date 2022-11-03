@@ -53,6 +53,11 @@ noremap <silent> <Leader>- :vertical resize -5<CR>
 
 tnoremap <Esc> <C-\><C-n>
 
+" eslint_d
+" let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_javascript_eslint_exec = 'eslint_d'
+" nnoremap <leader>f mF:%!eslint_d --stdin --fix-to-stdout --stdin-filename %<CR>`F
+
 " neovide zoom
 "
 let g:gui_font_size = 12
