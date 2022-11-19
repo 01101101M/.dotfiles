@@ -15,7 +15,8 @@ return require("packer").startup({
         use("ThePrimeagen/harpoon")
 
         --lsp
-        use("williamboman/nvim-lsp-installer")
+        use("williamboman/mason.nvim")
+        use("williamboman/mason-lspconfig.nvim")
         use('neovim/nvim-lspconfig')
         use("nvim-lua/lsp_extensions.nvim")
         use("onsails/lspkind-nvim")
@@ -73,6 +74,7 @@ return require("packer").startup({
         use("akinsho/toggleterm.nvim")
         use("ray-x/lsp_signature.nvim")
         --nul-ls
+        use("jose-elias-alvarez/typescript.nvim")
         use("jose-elias-alvarez/null-ls.nvim")
     end,
     config = {

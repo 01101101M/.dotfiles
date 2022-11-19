@@ -1,5 +1,5 @@
-
-require("nvim-lsp-installer").setup({
+require("mason").setup()
+require("mason-lspconfig").setup({
     automatic_installation = true,
 })
 
@@ -117,17 +117,16 @@ local function config(_config)
                     vim.lsp.buf.formatting_sync()
                 end
             })
-            nnoremap("<leader>f", function() lsp_formatting(bufnr) end)
+            nnoremap("<leader>f", function() vim.lsp.buf.formatting_sync() end)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
-            nnoremap("K", function() vim.lsp.buf.hover() end)
-            nnoremap("<leader>vws", function() vim.lsp.buf.workspace_symbol() end)
-            nnoremap("<leader>vd", function() vim.diagnostic.open_float() end)
+            nnoremap("<leader>gD", function() vim.lsp.buf.declaration() end)
+            nnoremap("<leader>gT", function() vim.lsp.buf.type_definition() end)
+
+            nnoremap("<space>rr", function() vim.cmd('LspRestart') end)
             nnoremap("[d", function() vim.diagnostic.goto_next() end)
             nnoremap("]d", function() vim.diagnostic.goto_prev() end)
-            nnoremap("<leader>vca", function() vim.lsp.buf.code_action() end)
-            nnoremap("<leader>vrr", function() vim.lsp.buf.references() end)
-            nnoremap("<leader>vrn", function() vim.lsp.buf.rename() end)
-            inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
+            nnoremap("<leader>ca", function() vim.lsp.buf.code_action() end)
+            nnoremap("<leader>re", function() vim.lsp.buf.rename() end)
         end,
     }, _config or {})
 end
@@ -176,6 +175,16 @@ lspconfig.gopls.setup(config({
 
 
 lspconfig['tsserver'].setup(config())
+require("typescript").setup({
+    disable_commands = false, -- prevent the plugin from creating Vim commands
+    debug = false, -- enable debug logging for commands
+    go_to_source_definition = {
+        fallback = true, -- fall back to standard LSP definition on failure
+    },
+    server = { -- pass options to lspconfig's setup method
+        on_attach = config().on_attach
+    },
+})
 lspconfig['golangci_lint_ls'].setup(config())
 lspconfig['ccls'].setup(config())
 lspconfig['cssls'].setup(config())
