@@ -1,14 +1,16 @@
 return require("packer").startup({
     function(use)
-
         use('wbthomason/packer.nvim')
         use('tomasiser/vim-code-dark')
+
 
         -- dpr created lodash of neovim
         use("nvim-lua/plenary.nvim")
         use("nvim-lua/popup.nvim")
         use("nvim-telescope/telescope.nvim")
         use("kyazdani42/nvim-web-devicons")
+        -- file explorer
+        use("nvim-tree/nvim-tree.lua")
 
         -- Primeagen doesn"t create lodash
         use("ThePrimeagen/git-worktree.nvim")

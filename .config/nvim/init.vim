@@ -46,7 +46,8 @@ nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 
-nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+" nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+nnoremap <leader>pv :NvimTreeToggle<CR>
 noremap <silent> <Leader>+ :vertical resize +5<CR>
 noremap <silent> <Leader>- :vertical resize -5<CR>
 
