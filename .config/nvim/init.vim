@@ -18,8 +18,6 @@ nnoremap <leader>ws :Telescope lsp_document_symbols<CR>
 
 "git
 nmap <leader>gs :Git<CR>
-nmap <leader>] <Plug>(GitGutterNextHunk)
-nmap <leader>[ <Plug>(GitGutterPrevHunk)
 
 "move selection
 vnoremap J :m '>+1<CR>gv=gv

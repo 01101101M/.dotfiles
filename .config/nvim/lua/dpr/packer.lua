@@ -39,9 +39,9 @@ return require("packer").startup({
         use("romgrk/nvim-treesitter-context")
         use('nvim-treesitter/nvim-treesitter-textobjects')
         --git
-        use('airblade/vim-gitgutter')
-        use('APZelos/blamer.nvim')
         use('tpope/vim-fugitive')
+        use('lewis6991/gitsigns.nvim')
+
         --firenvim
         use {
             'glacambre/firenvim',
