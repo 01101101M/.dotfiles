@@ -98,8 +98,7 @@ cmp.setup.cmdline(':', {
 local lsp_formatting = function(bufnr)
     vim.lsp.buf.format({
         filter = function(client)
-            -- return client.name ~= "volar"
-            return true
+            return client.name ~= "tsserver"
         end,
         bufnr = bufnr,
     })
@@ -112,12 +111,12 @@ local function config(_config)
         on_attach = function(client, bufnr)
             vim.api.nvim_create_autocmd("BufWritePre", {
                 group = vim.api.nvim_create_augroup("auto_fmt", {}),
-                pattern = { "*.go", "*.lua" },
+                pattern = { "*.go", "*.lua", "*.ts", "*.js", "*.vue" },
                 callback = function()
-                    vim.lsp.buf.formatting_sync()
+                    lsp_formatting(bufnr)
                 end
             })
-            nnoremap("<leader>f", function() vim.lsp.buf.formatting_sync() end)
+            nnoremap("<leader>f", function() lsp_formatting(bufnr) end)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
             nnoremap("<leader>gD", function() vim.lsp.buf.declaration() end)
             nnoremap("<leader>gT", function() vim.lsp.buf.type_definition() end)
@@ -261,7 +260,7 @@ if use_null then
                     group = augroup,
                     buffer = bufnr,
                     callback = function()
-                        vim.lsp.buf.formatting_sync({ bufnr = bufnr })
+                        lsp_formatting(bufnr)
                     end,
                 })
             end
