@@ -4,6 +4,8 @@ return require("packer").startup({
         use('tomasiser/vim-code-dark')
 
 
+        use('mhinz/vim-startify')
+
         -- dpr created lodash of neovim
         use("nvim-lua/plenary.nvim")
         use("nvim-lua/popup.nvim")
