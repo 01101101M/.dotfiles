@@ -27,6 +27,9 @@ nnoremap Y yg$
 nnoremap n nzzzv
 nnoremap N Nzzzv
 nnoremap J mzJ`z
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+
 
 noremap <leader>1 1gt
 noremap <leader>2 2gt
