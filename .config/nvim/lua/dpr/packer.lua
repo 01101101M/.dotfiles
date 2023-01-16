@@ -12,7 +12,7 @@ return require("packer").startup({
         use("nvim-telescope/telescope.nvim")
         use("kyazdani42/nvim-web-devicons")
         -- file explorer
-        --use("nvim-tree/nvim-tree.lua")
+        use("nvim-tree/nvim-tree.lua")
 
         -- Primeagen doesn"t create lodash
         use("ThePrimeagen/git-worktree.nvim")
