@@ -105,6 +105,30 @@ local lsp_formatting = function(bufnr)
 end
 
 
+local implementation = function()
+    local params = vim.lsp.util.make_position_params()
+
+    vim.lsp.buf_request(0, "textDocument/implementation", params, function(err, result, ctx, config)
+        local bufnr = ctx.bufnr
+        local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
+
+        -- In go code, I do not like to see any mocks for impls
+        if ft == "go" then
+            local new_result = vim.tbl_filter(function(v)
+                return not string.find(v.uri, "mock_")
+            end, result)
+
+            if #new_result > 0 then
+                result = new_result
+            end
+        end
+
+        vim.lsp.handlers["textDocument/implementation"](err, result, ctx, config)
+        vim.cmd [[normal! zz]]
+    end)
+end
+
+
 local function config(_config)
     return vim.tbl_deep_extend("force", {
         capabilities = require("cmp_nvim_lsp").default_capabilities(),
@@ -120,6 +144,8 @@ local function config(_config)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
             nnoremap("<leader>gD", function() vim.lsp.buf.declaration() end)
             nnoremap("<leader>gT", function() vim.lsp.buf.type_definition() end)
+            nnoremap("<space>gi", implementation)
+            nnoremap("gi", function() vim.cmd("Telescope lsp_implementations") end)
 
             nnoremap("<space>rr", function() vim.cmd('LspRestart') end)
             nnoremap("[d", function() vim.diagnostic.goto_next() end)
@@ -185,7 +211,18 @@ require("typescript").setup({
     },
 })
 lspconfig['golangci_lint_ls'].setup(config())
-lspconfig['ccls'].setup(config())
+--[[ lspconfig['ccls'].setup(config({
+    root_dir = function(fname)
+        return util.root_pattern("compile_commands.json", "compile_flags.txt", ".git")(fname)
+            or util.find_git_ancestor(fname)
+    end,
+    init_options = {
+        compilationDatabaseDirectory = "build",
+        clang = { excludeArgs = { "-frounding-math" } },
+        single_file_support = true,
+    }
+})) ]]
+lspconfig['clangd'].setup(config())
 lspconfig['cssls'].setup(config())
 lspconfig['grammarly'].setup(config())
 lspconfig['vimls'].setup(config())
