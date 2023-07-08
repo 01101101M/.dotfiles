@@ -44,7 +44,6 @@ cmp.setup({
         ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(),
     }),
-
     formatting = {
         format = function(entry, vim_item)
             vim_item.kind = lspkind.presets.default[vim_item.kind]
@@ -60,8 +59,8 @@ cmp.setup({
         { name = "luasnip" },
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
-        { name = "buffer", max_item_count = 3 },
-        { name = 'rg', max_item_count = 3 },
+        { name = "buffer",  max_item_count = 3 },
+        { name = 'rg',      max_item_count = 3 },
         { name = 'spell' },
     },
 })
@@ -144,7 +143,8 @@ local function config(_config)
             nnoremap("<leader>gd", function() vim.lsp.buf.definition() end)
             nnoremap("<leader>gD", function() vim.lsp.buf.declaration() end)
             nnoremap("<leader>gT", function() vim.lsp.buf.type_definition() end)
-            nnoremap("<space>gi", implementation)
+            nnoremap("<leader>gi", implementation)
+            nnoremap("<leader>gr", function() vim.cmd("Telescope lsp_references") end)
             nnoremap("gi", function() vim.cmd("Telescope lsp_implementations") end)
 
             nnoremap("<space>rr", function() vim.cmd('LspRestart') end)
@@ -202,11 +202,11 @@ lspconfig.gopls.setup(config({
 lspconfig['tsserver'].setup(config())
 require("typescript").setup({
     disable_commands = false, -- prevent the plugin from creating Vim commands
-    debug = false, -- enable debug logging for commands
+    debug = false,            -- enable debug logging for commands
     go_to_source_definition = {
-        fallback = true, -- fall back to standard LSP definition on failure
+        fallback = true,      -- fall back to standard LSP definition on failure
     },
-    server = { -- pass options to lspconfig's setup method
+    server = {                -- pass options to lspconfig's setup method
         on_attach = config().on_attach
     },
 })
@@ -222,6 +222,7 @@ lspconfig['golangci_lint_ls'].setup(config())
         single_file_support = true,
     }
 })) ]]
+--[[ lspconfig['kotlin'].setup(config()) ]]
 lspconfig['clangd'].setup(config())
 lspconfig['cssls'].setup(config())
 lspconfig['grammarly'].setup(config())
@@ -229,9 +230,10 @@ lspconfig['vimls'].setup(config())
 lspconfig['volar'].setup(config())
 lspconfig['cssmodules_ls'].setup(config())
 lspconfig['sqlls'].setup(config())
-lspconfig['sqls'].setup(config())
+lspconfig['sqlls'].setup(config())
+lspconfig['angularls'].setup(config())
 lspconfig['bashls'].setup(config())
-lspconfig['sumneko_lua'].setup(config({
+lspconfig['lua_ls'].setup(config({
     settings = {
         Lua = {
             diagnostics = {
@@ -247,7 +249,6 @@ local opts = {
     -- or you just hate the highlight
     -- default: true
     highlight_hovered_item = true,
-
     -- whether to show outline guides
     -- default: true
     show_guides = true,

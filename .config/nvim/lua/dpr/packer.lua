@@ -71,7 +71,7 @@ return require("packer").startup({
         use('tpope/vim-abolish')
         use('editorconfig/editorconfig-vim')
         --arilne
-        use('vim-airline/vim-airline')
+        --use('vim-airline/vim-airline')
         --undo tree
         use('mbbill/undotree')
         --terminal
@@ -80,6 +80,13 @@ return require("packer").startup({
         --nul-ls
         use("jose-elias-alvarez/typescript.nvim")
         use("jose-elias-alvarez/null-ls.nvim")
+        use({ "elzr/vim-json", ft = "json" })
+        use({
+            'nvim-lualine/lualine.nvim',
+            requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+        })
+        --[[ use("github/copilot.vim") ]]
+        use("gelguy/wilder.nvim")
     end,
     config = {
         git = {
