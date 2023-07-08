@@ -279,30 +279,20 @@ require("luasnip.loaders.from_vscode").lazy_load({
 -- Set up null-ls
 local use_null = true
 if use_null then
-    local augroup = vim.api.nvim_create_augroup("auto_fmt", {})
     local null_ls = require("null-ls")
-    local b = null_ls.builtins
+    -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
+    local formatting = null_ls.builtins.formatting
+    -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
+    local diagnostics = null_ls.builtins.diagnostics
+
     null_ls.setup {
+        debug = false,
         sources = {
-            -- b.diagnostics.eslint,
-            -- b.completion.spell,
-            b.diagnostics.eslint_d,
-            b.formatting.eslint_d,
+            formatting.prettier.with { extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" } },
+            formatting.black.with { extra_args = { "--fast" } },
+            formatting.stylua,
+            diagnostics.flake8,
         },
-        debug = true,
-        -- format on save
-        on_attach = function(client, bufnr)
-            if client.supports_method("textDocument/formatting") then
-                vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-                vim.api.nvim_create_autocmd("BufWritePre", {
-                    group = augroup,
-                    buffer = bufnr,
-                    callback = function()
-                        lsp_formatting(bufnr)
-                    end,
-                })
-            end
-        end,
     }
 end
 
