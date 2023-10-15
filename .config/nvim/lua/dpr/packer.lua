@@ -85,7 +85,7 @@ return require("packer").startup({
             'nvim-lualine/lualine.nvim',
             requires = { 'kyazdani42/nvim-web-devicons', opt = true }
         })
-        --[[ use("github/copilot.vim") ]]
+        use("github/copilot.vim")
         use("gelguy/wilder.nvim")
     end,
     config = {
